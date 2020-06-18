@@ -8,14 +8,15 @@ class Helper():
         self._addr = (self._server, self._port)
 
     def connect(self):
+        return
         try:
-            print("connecting...")
             self._conn.connect(self._addr)
             return self._conn.recv(4096).decode()
         except socket.error as e:
             print("error 1 : ", e)
 
     def send(self, data):
+        return
         try:
             self._conn.send(str.encode(data))
             #return self._conn.recv(4096).decode()
@@ -23,6 +24,7 @@ class Helper():
             print("error 2: " + str(e))
 
     def recv(self):
+        return
         try:
             data = self._conn.recv(4096).decode()
             return data
@@ -33,4 +35,5 @@ class Helper():
                 return "TIMEOUT"
 
     def close(self):
+        pass
         self._conn.close()
