@@ -2,6 +2,10 @@
 import threading, socket
 from queue import Queue
 
+## TODO honestly unnecessary as the server can listen to on and one players
+## though would still need thread for thigns like a chat etc
+## maybe one for calculating winner?
+
 class Client(threading.Thread):
     def __init__(self, conn, queues):
         threading.Thread.__init__(self)

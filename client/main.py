@@ -5,6 +5,7 @@ import os
 
 from networking import Helper
 from game import Game
+from player import Player
 from consts import *
 
 #
@@ -26,9 +27,9 @@ def event_handler(pygame, h, g):
         h.close()
         return False
     elif keys_pressed[pygame.K_LEFT]:
-        g.set_card_size(-0.01)
+        pass
     elif keys_pressed[pygame.K_RIGHT]:
-        g.set_card_size(0.01)
+        pass
     else:
         pressed = []
         for id, key in enumerate(keys_pressed):
@@ -42,7 +43,7 @@ def event_handler(pygame, h, g):
     mouse_pressed = pygame.mouse.get_pressed()
     if mouse_pressed[0]:
         mouse_pos = pygame.mouse.get_pos()
-        g.set_card_pos(mouse_pos)
+        print(mouse_pos)
         h.send(data)
     elif mouse_pressed[2]:
         mouse_pos = pygame.mouse.get_pos()
@@ -76,7 +77,7 @@ def frame_tick(g):
 
     window.blit(g.BG, (0,0))
 
-    window.blit(g._deck["2H"].get_surf() , g.pos)
+    g.blit_to_surface(g.BG)
 
     # update game
 
@@ -95,13 +96,6 @@ if __name__ == "__main__":
     #
     print("starting up...")
 
-    pygame.init()
-    window = pygame.display.set_mode((NUMBER["screen_width"], NUMBER["screen_height"]))
-    pygame.display.set_caption("Client")
-    clock = pygame.time.Clock()
-
-    print(" - pygame initiated - ")
-
     print("establishing connection")
     h = Helper()
     conn = h.connect()
@@ -114,7 +108,15 @@ if __name__ == "__main__":
 
     print(" - connection established - ")
 
-    print("loading game files...")
+
+    pygame.init()
+    window = pygame.display.set_mode((NUMBER["screen_width"], NUMBER["screen_height"]))
+    pygame.display.set_caption("Client")
+    clock = pygame.time.Clock()
+
+    print(" - pygame initiated - ")
+
+    print("loading game...")
 
     g = Game()
 
@@ -126,8 +128,22 @@ if __name__ == "__main__":
     for filename in os.listdir(PATH["ABS"]+PATH["img_cards_png"]):
         g.add_card_to_deck(filename.split(".")[0],
                         PATH["ABS"]+PATH["img_cards_png"]+filename)
-    print(" - CARDS loaded")
 
+    print(" - IMAGES loaded")
+
+    for i in range(5):
+        g.load_player(i,
+                      Player((0,0),
+                             (POSITION  ["player_" + str(i) + "_card_left"],
+                             SCALE      ["player_" + str(i)]),
+                             (POSITION  ["player_" + str(i) + "_card_right"],
+                             SCALE      ["player_" + str(i)]),
+                             POSITION   ["player_" + str(i) + "_money"]
+                             )
+                      )
+    g.init_values()
+
+    g.load_table()
 
     print(" - loaded all game objects - ")
 
