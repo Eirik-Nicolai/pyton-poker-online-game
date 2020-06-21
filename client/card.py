@@ -32,3 +32,7 @@ class CardInUse():
 
     def get_pos(self):
         return self._pos
+
+
+if __name__ == '__main__':
+    print("card")

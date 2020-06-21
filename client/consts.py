@@ -1,3 +1,6 @@
+# GLOBAL CONSTS
+# To be removed after more is finished
+
 # -----------------------
 # ------- COLOURS -------
 # -----------------------
@@ -19,24 +22,30 @@ POSITION = {
     "player_0_card_right"           : (997 , 471),
     "player_0_card_left"            : (797 , 471),
     "player_0_money"                : (718 , 744),
+    "player_0_action"               : (718 , 666),
 
     "player_1_card_left"            : (246 , 500),
     "player_1_card_right"           : (355 , 500),
     "player_1_money"                : (246 , 666),
+    "player_1_action"               : (346 , 666),
 
     "player_2_card_left"            : (65  , 120),
     "player_2_card_right"           : (174 , 120),
-    "player_2_money"                : (65  , 287),
+    "player_2_money"                : (65  , 85),
+    "player_2_action"               : (165  , 85),
 
     "player_3_card_left"            : (473 , 50),
     "player_3_card_right"           : (584 , 50),
-    "player_3_money"                : (473 , 216),
+    "player_3_money"                : (473 , 16),
+    "player_3_action"               : (573 , 16),
 
     "player_4_card_left"            : (914 , 100),
     "player_4_card_right"           : (1029, 100),
-    "player_4_money"                : (914 , 264),
+    "player_4_money"                : (914 , 64),
+    "player_4_action"               : (1014 , 64),
 
-    "table_cards_position"         :  (275 , 250)
+    "table_cards_position"         :  (380 , 280),
+    "table_pot_position"           :  (600 , 430),  
 }
 
 
@@ -72,5 +81,5 @@ SCALE = {
     "player_3"       : 0.149,
     "player_4"       : 0.149,
 
-    "table_card"     : 0.149
+    "table_card"     : 0.119
 }

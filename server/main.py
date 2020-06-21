@@ -27,7 +27,6 @@ except socket.error as e:
 s.listen()
 print("Listening...")
 
-threads = []
 
 if __name__ == "__main__":
     ##init some things ?
@@ -37,16 +36,14 @@ if __name__ == "__main__":
     masterthread = Master(s, masterqueue)
     masterthread.start()
 
-    var = [0,0,0]
-    queue.put(var)
     menu = True
     while menu:
 #        try:
         conn, addr = s.accept()
+        conn.setblocking(0)
         print("Connected to ", addr)
         new_thread = Client((conn, addr), [queue, masterqueue])
-        masterthread.add_thread(conn, new_thread)
-        threads.append(new_thread)
+        masterthread.add_thread(addr, new_thread)
 
         new_thread.start()
 

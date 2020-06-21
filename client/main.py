@@ -3,7 +3,7 @@ import pygame
 import sys
 import os
 
-from networking import Helper
+from networking import *
 from game import Game
 from player import Player
 from consts import *
@@ -44,15 +44,14 @@ def event_handler(pygame, h, g):
     if mouse_pressed[0]:
         mouse_pos = pygame.mouse.get_pos()
         print(mouse_pos)
-        h.send(data)
+        #h.send(Message().fold())
     elif mouse_pressed[2]:
         mouse_pos = pygame.mouse.get_pos()
         print("Right mouse pressed.")
-        h.send(data)
     elif mouse_pressed[1]:
         mouse_pos = pygame.mouse.get_pos()
         print("Middle mouse pressed.")
-        h.send("hello")
+        #h.send("hello")
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -63,10 +62,35 @@ def event_handler(pygame, h, g):
 
     return True
 
-def listen(h):
+def listen(h, g):
     data = h.recv()
-    if data != "TIMEOUT":
-        print("answr: " + data)
+    if data == "connected":
+        print("connected")
+        return
+    if data == None: #listening
+        #print("LISTENING : NONE DATA RECEIVED")
+        return
+
+    jsondata = None
+    try:
+        jsondata = json.loads(data)
+    except json.JSONDecodeError as e:
+        print("JSON Error : " + str(e))
+        print("D: ", data)
+        print()
+        return
+    print(jsondata)
+
+    header = jsondata["header"]
+    # do something
+    type = jsondata["type"]
+    body = jsondata["body"]
+
+    if type == "player_connect":
+        g.handle_connected_players(body)
+    elif type == "player_action":
+        pass
+
 
 #
 #       UPDATE SCREEN
@@ -96,19 +120,6 @@ if __name__ == "__main__":
     #
     print("starting up...")
 
-    print("establishing connection")
-    h = Helper()
-    conn = h.connect()
-
-    #if conn == "CONNECTED":
-        #h._conn.settimeout(0)
-    #else:
-        #print("E : ERROR CONNECTING : " + str(conn))
-        #sys.exit()
-
-    print(" - connection established - ")
-
-
     pygame.init()
     window = pygame.display.set_mode((NUMBER["screen_width"], NUMBER["screen_height"]))
     pygame.display.set_caption("Client")
@@ -131,21 +142,25 @@ if __name__ == "__main__":
 
     print(" - IMAGES loaded")
 
-    for i in range(5):
-        g.load_player(i,
-                      Player((0,0),
-                             (POSITION  ["player_" + str(i) + "_card_left"],
-                             SCALE      ["player_" + str(i)]),
-                             (POSITION  ["player_" + str(i) + "_card_right"],
-                             SCALE      ["player_" + str(i)]),
-                             POSITION   ["player_" + str(i) + "_money"]
-                             )
-                      )
     g.init_values()
 
     g.load_table()
 
     print(" - loaded all game objects - ")
+
+    print("establishing connection")
+    h = Helper()
+    h.connect()
+    conn = h.check_connection()
+
+    if conn is not None:
+        h._conn.settimeout(0)
+        h._id = conn
+    else:
+        print("E : ERROR CONNECTING")
+        sys.exit()
+
+    print(" - connection established - ")
 
     #
     #       MENU LOOP
@@ -162,7 +177,7 @@ if __name__ == "__main__":
 
         run = event_handler(pygame, h, g)
 
-        #listen(h)
+        listen(h, g)
 
         frame_tick(g)
 
